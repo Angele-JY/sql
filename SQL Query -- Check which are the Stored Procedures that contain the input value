@@ -1,0 +1,2 @@
+--Check which are the Stored Procedures that contain the input value
+SELECT name FROM sys.proceduresWHERE Object_definition(object_id) LIKE '%Test%'
