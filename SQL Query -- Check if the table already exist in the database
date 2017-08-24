@@ -1,0 +1,9 @@
+--Check if the table already exist in the database, if it exist then will drop the table.
+--Reason to do that: So the table create script will be configurable/rerunable 
+--U stands for (User-defined) table as opposed to system table.
+--N stands for uNicode (2 bytes) character/string literal.  Same results without the N.
+
+IF OBJECT_ID (N'Table_Name', N'U') IS NOT NULL
+BEGIN	
+  DROP TABLE [dbo].[Table_Name]
+END
