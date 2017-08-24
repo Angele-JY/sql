@@ -1,0 +1,53 @@
+CREATE FUNCTION [schema].[FunctionName]()     
+RETURNS @TempTable TABLE( 
+[Column1] nvarchar(20) NULL, 
+[Column2] varchar(max) NULL)
+AS
+BEGIN
+
+-- start of actual sql
+DECLARE @MaxRownum INT
+SET @MaxRownum = (SELECT MAX(aa.RowNum) FROM (SELECT RowNum = ROW_NUMBER() OVER (order by Column1),* FROM [schema].[TableName]) as aa)
+
+DECLARE @Iter INT
+SET @Iter = (SELECT MIN(aa.RowNum) FROM (SELECT RowNum = ROW_NUMBER() OVER (order by Column1),* FROM [schema].[TableName]) as aa)
+
+WHILE @Iter <= @MaxRownumBEGIN
+
+DECLARE @RowIdentifier nvarchar(20)
+SET @RowIdentifier = (select Column1 from (SELECT RowNum = ROW_NUMBER() OVER (order by Column1),* FROM [schema].[TableName]) as aa where RowNum=@Iter)
+
+declare @Str VARCHAR(max),@End INT, @Split Int
+SET @Str = (select Column2 from [schema].[TableName] where Column1=@RowIdentifier)
+SET @Split = 10000 --set max limit of char
+
+WHILE (LEN(@Str) > 0 And @RowIdentifier is not null)
+BEGIN    
+
+IF (LEN(@Str) > @Split)    
+BEGIN        
+
+SET @End = LEN(LEFT(@Str, @Split)) - CHARINDEX(' ', REVERSE(LEFT(@Str, @Split)))        
+INSERT INTO @TempTable VALUES (@RowIdentifier,RTRIM(LTRIM(LEFT(LEFT(@Str, @Split), @End-1))))        
+SET @Str = SUBSTRING(@Str, @End+1, LEN(@Str))    
+
+END    
+
+ELSE    
+BEGIN        
+
+INSERT INTO @TempTable VALUES (@RowIdentifier,RTRIM(LTRIM(@Str)))        
+SET @Str = ''    
+
+END  
+
+END
+
+set @Iter = @Iter + 1
+
+end
+-- end of actual sql  
+  RETURN
+  END
+  
+  GO
