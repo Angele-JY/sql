@@ -1,0 +1,6 @@
+--Check if the record already exist in the table
+if not exists (Select * from [dbo].[TableName] where column_name = 'Testing')
+BEGIN	
+  Insert into [dbo].[TableName] (column_name,column_name1,column_name2)	
+  values( 'Test','Test2',getdate())
+END
