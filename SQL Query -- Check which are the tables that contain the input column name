@@ -1,0 +1,2 @@
+--Check which are the tables that contain the input column name 
+SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME LIKE '%Test%' ORDER BY TABLE_NAME
