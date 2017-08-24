@@ -1,0 +1,18 @@
+--Convert String list item to a column. E.g @testTypeList VARCHAR (500) = 'JAVA,PYTHON,SQL' 
+--After excuting the query, the testTypeList will be convert to a column named testType
+
+IF(@testTypeList <> '')	
+BEGIN			
+    WITH StrCTE(start, stop) AS 		
+    ( 		  
+      SELECT  1, CHARINDEX(',' , @testTypeList ) 		  
+      UNION ALL 		  
+      SELECT  stop + 1, CHARINDEX(',' ,@testTypeList  , stop + 1) 		  
+      FROM StrCTE 		  
+      WHERE stop > 0 		
+      ) 
+      
+		SELECT REPLACE(SUBSTRING(@testTypeList , start, CASE WHEN stop > 0 THEN stop-start ELSE 4000 END),'''','') AS testType		
+    INTO #testTypeTable 		
+    FROM StrCTE 	
+END
